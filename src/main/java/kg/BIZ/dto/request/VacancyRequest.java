@@ -6,6 +6,7 @@ import lombok.Builder;
 public record VacancyRequest(
         String companyName,
         String phoneNumber,
-        String requirement
+        String requirement,
+        String location
 ) {
 }

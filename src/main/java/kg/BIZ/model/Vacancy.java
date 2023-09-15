@@ -24,6 +24,8 @@ public class Vacancy {
 
     String requirement;
 
+    String location;
+
     @Column(name = "company_name")
     String companyName;
 
