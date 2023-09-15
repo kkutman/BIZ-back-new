@@ -1,4 +1,4 @@
-package kg.biz;
+package kg.BIZ;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
