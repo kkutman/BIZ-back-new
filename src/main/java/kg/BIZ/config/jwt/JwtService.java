@@ -7,7 +7,14 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
+import kg.BIZ.exception.exceptions.NotFoundException;
+import kg.BIZ.model.User;
+import kg.BIZ.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +25,10 @@ import java.util.Map;
 import java.util.function.Function;
 
 @Service
+@Slf4j
+@RequiredArgsConstructor
 public class JwtService {
+    private final UserRepository userRepository;
     @Value("${jwt.secret-key}")
     private String SECRET_KEY;
 
@@ -81,5 +91,16 @@ public class JwtService {
     private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public User getAuthenticate() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String login = authentication.getName();
+        log.info("Successfully authenticated user - " + login);
+        return userRepository.findByEmail(login).orElseThrow(() -> {
+            log.error("Пользователь не найден с токеном пожалуйста войдите или зарегистрируйтесь!");
+            return new NotFoundException("пользователь не найден с токеном пожалуйста войдите или зарегистрируйтесь");
+        });
+
     }
 }
