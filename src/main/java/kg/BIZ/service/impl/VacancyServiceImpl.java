@@ -29,47 +29,45 @@ public class VacancyServiceImpl implements VacancyService {
 
     public User getAuthenticate() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication instanceof AnonymousAuthenticationToken){
-            System.out.println("yes");
-        }else {
-            System.out.println("no");
-        }
         String login = authentication.getName();
-        System.out.println("login : "+login);
         log.info("Токен взят!");
         return userRepository.findByEmail(login).orElseThrow(() -> {
             log.error("Пользователь не найден с токеном пожалуйста войдите или зарегистрируйтесь!");
             return new NotFoundException("пользователь не найден с токеном пожалуйста войдите или зарегистрируйтесь");
         });
     }
+
     @Override
-    public SimpleResponse saveVacancy(VacancyRequest request, Authentication authentication) {
-        System.out.println("name "+getAuthenticate().getEmail());
-
-        User principal = (User) authentication.getPrincipal();
-        System.out.println(principal.getUsername());
-
+    public SimpleResponse saveVacancy(VacancyRequest request) {
+        User user = getAuthenticate();
         Vacancy vacancy = Vacancy.builder()
                 .companyName(request.companyName())
                 .phoneNumber(request.phoneNumber())
                 .createdAt(LocalDate.now())
                 .requirement(request.requirement())
                 .isActive(false)
+                .user(user)
+                .email(user.getEmail())
                 .build();
         vacancyRepository.save(vacancy);
-        return new SimpleResponse(HttpStatus.OK,"Vacancy successfully saved");
+        return new SimpleResponse(HttpStatus.OK, "Vacancy successfully saved");
     }
 
     @Override
-    public SimpleResponse updatedVacancy(VacancyRequest request,Long id) {
-//        Vacancy vacancy = vacancyRepository.findById(id)
-
-
-        return null;
+    public SimpleResponse updatedVacancy(VacancyRequest request, Long id) {
+        Vacancy vacancy = vacancyRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(String.format("Vacancy with id %s not found!", id)));
+        if (request.companyName() != null) vacancy.setCompanyName(request.companyName());
+        if (request.requirement() != null) vacancy.setRequirement(request.requirement());
+        if (request.phoneNumber() != null) vacancy.setPhoneNumber(request.phoneNumber());
+        vacancyRepository.save(vacancy);
+        return new SimpleResponse(HttpStatus.OK, "Vacancy successfully updated!");
     }
 
     @Override
     public SimpleResponse deletedVacancy(Long id) {
-        return null;
+        vacancyRepository.delete(vacancyRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(String.format("Vacancy with id %s not found!", id))));
+        return new SimpleResponse(HttpStatus.OK, "Vacancy successfully deleted!");
     }
 }

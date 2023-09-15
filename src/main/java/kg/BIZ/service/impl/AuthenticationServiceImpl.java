@@ -65,11 +65,11 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .createdAt(LocalDate.now())
                 .build();
 
-//        if (Objects.equals(request.role(), Role.VOLUNTEER.name())){
-//            Volunteer volunteer = new Volunteer();
-//            volunteer.setAge(request.age());
-//            user.setVolunteer(volunteer);
-//        }else user.setManager(new Manager());
+        if (request.role().equalsIgnoreCase(Role.VOLUNTEER.name())){
+            user.setVolunteer(Volunteer.builder().age(request.age()).user(user).build());
+        }else if (request.role().equalsIgnoreCase(Role.MANAGER.name())){
+            user.setManager(Manager.builder().user(user).build());
+        }
 
         userRepository.save(user);
         log.info(String.format("Пользователь %s успешно сохранен!", user.getEmail()));

@@ -5,7 +5,7 @@ import kg.BIZ.dto.response.SimpleResponse;
 import org.springframework.security.core.Authentication;
 
 public interface VacancyService {
-    SimpleResponse saveVacancy(VacancyRequest request, Authentication authentication);
+    SimpleResponse saveVacancy(VacancyRequest request);
     SimpleResponse updatedVacancy(VacancyRequest request,Long id);
     SimpleResponse deletedVacancy(Long id);
 }

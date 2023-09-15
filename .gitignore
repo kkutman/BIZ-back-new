@@ -33,3 +33,4 @@ build/
 .vscode/
 
 src/main/resources/application-adil.properties
+src/main/resources/application-kutman.properties
