@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import kg.BIZ.dto.request.VacancyRequest;
 import kg.BIZ.dto.response.SimpleResponse;
+import kg.BIZ.dto.response.VacancyResponse;
 import kg.BIZ.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -37,5 +38,11 @@ public class VacancyApi {
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
     public SimpleResponse deletedVacancy(@RequestParam Long vacancyId){
         return vacancyService.deletedVacancy(vacancyId);
+    }
+
+    @GetMapping
+    @Operation(summary = "Get by vacancy", description = "This method get by id vacancy")
+    public VacancyResponse getById(@RequestParam Long vacancyId){
+        return vacancyService.getById(vacancyId);
     }
 }

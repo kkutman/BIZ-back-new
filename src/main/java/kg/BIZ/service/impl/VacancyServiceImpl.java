@@ -2,6 +2,7 @@ package kg.BIZ.service.impl;
 
 import kg.BIZ.dto.request.VacancyRequest;
 import kg.BIZ.dto.response.SimpleResponse;
+import kg.BIZ.dto.response.VacancyResponse;
 import kg.BIZ.exception.exceptions.NotFoundException;
 import kg.BIZ.model.User;
 import kg.BIZ.model.Vacancy;
@@ -45,6 +46,7 @@ public class VacancyServiceImpl implements VacancyService {
                 .phoneNumber(request.phoneNumber())
                 .createdAt(LocalDate.now())
                 .requirement(request.requirement())
+                .location(request.location())
                 .isActive(false)
                 .user(user)
                 .email(user.getEmail())
@@ -60,6 +62,7 @@ public class VacancyServiceImpl implements VacancyService {
         if (request.companyName() != null) vacancy.setCompanyName(request.companyName());
         if (request.requirement() != null) vacancy.setRequirement(request.requirement());
         if (request.phoneNumber() != null) vacancy.setPhoneNumber(request.phoneNumber());
+        if (request.location() != null) vacancy.setLocation(request.location());
         vacancyRepository.save(vacancy);
         return new SimpleResponse(HttpStatus.OK, "Vacancy successfully updated!");
     }
@@ -69,5 +72,18 @@ public class VacancyServiceImpl implements VacancyService {
         vacancyRepository.delete(vacancyRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format("Vacancy with id %s not found!", id))));
         return new SimpleResponse(HttpStatus.OK, "Vacancy successfully deleted!");
+    }
+
+    @Override
+    public VacancyResponse getById(Long id) {
+        Vacancy vacancy = vacancyRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(String.format("Vacancy with id %s not found!", id)));
+        return VacancyResponse.builder()
+                .companyName(vacancy.getCompanyName())
+                .description(vacancy.getRequirement())
+                .email(vacancy.getEmail())
+                .location(vacancy.getLocation())
+                .phoneNumber(vacancy.getPhoneNumber())
+                .build();
     }
 }
