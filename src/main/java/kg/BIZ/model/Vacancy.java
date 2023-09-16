@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @Getter
 @Setter
@@ -41,4 +42,7 @@ public class Vacancy {
     User user;
 
     boolean isActive;
+
+    @OneToMany
+    List<Volunteer>volunteers;
 }
