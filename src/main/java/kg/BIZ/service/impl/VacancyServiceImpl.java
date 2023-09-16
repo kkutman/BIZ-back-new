@@ -115,4 +115,16 @@ public class VacancyServiceImpl implements VacancyService {
         }
         return new SimpleResponse(HttpStatus.OK,"Request successfully accepted!");
     }
+
+    @Override
+    public SimpleResponse respond(Long id) {
+        Vacancy vacancy = vacancyRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(String.format("Vacancy with id %s not found!", id)));
+        if (vacancy.getVolunteers()==null){
+            vacancy.setVolunteers(new ArrayList<>());
+        }
+        vacancy.getVolunteers().add(getAuthenticate().getVolunteer());
+        vacancyRepository.save(vacancy);
+        return new SimpleResponse(HttpStatus.OK,"Respond successfully");
+    }
 }

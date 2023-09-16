@@ -63,4 +63,10 @@ public class VacancyApi {
         return vacancyService.acceptRequest(vacancyId);
     }
 
+    @PutMapping("/respond")
+    @PreAuthorize("hasAnyAuthority('VOLUNTEER')")
+    @Operation(summary = "Respond request", description = "This method respond request")
+    public SimpleResponse respond(@RequestParam Long vacancyId) {
+        return vacancyService.respond(vacancyId);
+    }
 }
