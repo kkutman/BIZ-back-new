@@ -94,12 +94,25 @@ public class VacancyServiceImpl implements VacancyService {
         List<ResponseVacancy> getAllVacancy = new ArrayList<>();
         List<Vacancy>vacancies = vacancyRepository.findAll();
         for (Vacancy vacancy : vacancies) {
-            getAllVacancy.add(ResponseVacancy.builder()
-                    .aboutVacancy(vacancy.getRequirement())
-                    .date(vacancy.getCreatedAt())
-                    .companyName(vacancy.getCompanyName())
-                    .build());
+            if (vacancy.isActive()) {
+                getAllVacancy.add(ResponseVacancy.builder()
+                        .aboutVacancy(vacancy.getRequirement())
+                        .date(vacancy.getCreatedAt())
+                        .companyName(vacancy.getCompanyName())
+                        .build());
+            }
         }
         return getAllVacancy;
+    }
+
+    @Override
+    public SimpleResponse acceptRequest(Long id) {
+        Vacancy vacancy = vacancyRepository.findById(id).orElseThrow(
+                () -> new NotFoundException(String.format("Vacancy with id %s not found!", id)));
+        if (!vacancy.isActive()){
+            vacancy.setActive(true);
+            vacancyRepository.save(vacancy);
+        }
+        return new SimpleResponse(HttpStatus.OK,"Request successfully accepted!");
     }
 }
