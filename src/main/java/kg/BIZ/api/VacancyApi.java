@@ -52,8 +52,8 @@ public class VacancyApi {
 
     @GetMapping("/get_all")
     @Operation(summary = "Get all vacancy", description = "This method get all vacancy")
-    public List<ResponseVacancy> getAll() {
-        return vacancyService.getAllVacancy();
+    public List<ResponseVacancy> getAll(@RequestParam Boolean trueOrFalse) {
+        return vacancyService.getAllVacancy(trueOrFalse);
     }
 
     @PutMapping("/accept")

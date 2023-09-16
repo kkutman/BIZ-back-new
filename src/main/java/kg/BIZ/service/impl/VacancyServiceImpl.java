@@ -90,11 +90,11 @@ public class VacancyServiceImpl implements VacancyService {
     }
 
     @Override
-    public List<ResponseVacancy> getAllVacancy() {
+    public List<ResponseVacancy> getAllVacancy(Boolean trueOrFalse) {
         List<ResponseVacancy> getAllVacancy = new ArrayList<>();
         List<Vacancy> vacancies = vacancyRepository.findAll();
         for (Vacancy vacancy : vacancies) {
-            if (vacancy.isActive()) {
+            if (vacancy.isActive()==trueOrFalse) {
                 getAllVacancy.add(ResponseVacancy.builder()
                                 .id(vacancy.getId())
                                 .aboutVacancy(vacancy.getRequirement())
