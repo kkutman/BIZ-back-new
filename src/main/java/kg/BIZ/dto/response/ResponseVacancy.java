@@ -6,6 +6,7 @@ import java.time.LocalDate;
 
 @Builder
 public record ResponseVacancy(
+        Long id,
         String companyName,
         String aboutVacancy,
         LocalDate date
