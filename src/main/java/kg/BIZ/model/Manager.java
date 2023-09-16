@@ -24,4 +24,6 @@ public class Manager {
     @OneToOne(cascade = ALL)
     @JoinColumn(name = "user_id")
     User user;
+    @OneToOne(cascade = ALL)
+    private Chat chat;
 }
