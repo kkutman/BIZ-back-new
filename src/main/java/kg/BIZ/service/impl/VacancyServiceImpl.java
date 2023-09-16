@@ -95,8 +95,7 @@ public class VacancyServiceImpl implements VacancyService {
         List<Vacancy> vacancies = vacancyRepository.findAll();
         for (Vacancy vacancy : vacancies) {
             if (vacancy.isActive()) {
-                getAllVacancy.add(
-                        ResponseVacancy.builder()
+                getAllVacancy.add(ResponseVacancy.builder()
                                 .id(vacancy.getId())
                                 .aboutVacancy(vacancy.getRequirement())
                                 .date(vacancy.getCreatedAt())
