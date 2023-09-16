@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import kg.BIZ.dto.request.VacancyRequest;
+import kg.BIZ.dto.response.ResponseVacancy;
 import kg.BIZ.dto.response.SimpleResponse;
 import kg.BIZ.dto.response.VacancyResponse;
 import kg.BIZ.service.VacancyService;
@@ -11,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/vacancy")
@@ -45,4 +48,12 @@ public class VacancyApi {
     public VacancyResponse getById(@RequestParam Long vacancyId){
         return vacancyService.getById(vacancyId);
     }
+
+    @GetMapping("/get_all")
+    @Operation(summary = "Get all vacancy", description = "This method get all vacancy")
+    public List<ResponseVacancy> getAll(){
+        return vacancyService.getAllVacancy();
+    }
+
+
 }
