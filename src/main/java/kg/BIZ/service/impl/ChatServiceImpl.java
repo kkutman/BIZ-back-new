@@ -12,14 +12,16 @@ import kg.BIZ.model.Chat;
 import kg.BIZ.model.Manager;
 import kg.BIZ.model.Message;
 import kg.BIZ.model.User;
+import kg.BIZ.model.enums.Role;
 import kg.BIZ.repository.ChatRepository;
+import kg.BIZ.repository.ManagerRepository;
 import kg.BIZ.repository.MessageRepository;
+import kg.BIZ.repository.UserRepository;
 import kg.BIZ.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,33 +33,48 @@ public class ChatServiceImpl implements ChatService {
     private final JwtService jwtService;
     private final MessageRepository messageRepository;
     private final ChatRepository chatRepository;
+    private final UserRepository userRepository;
+    private final ManagerRepository managerRepository;
 
 
     @Override
     public SimpleResponse sendMessage(MessageRequest messageRequest) {
 
         User user = jwtService.getAuthenticate();
-        Chat chat;
-        if (messageRequest.chatId() == 0) {
-            Manager manager = user.getManager();
-            chat = manager.getChat() != null ? manager.getChat() : new Chat();
-            manager.setChat(chat);
-            chat.setManager(manager);
-            chatRepository.save(chat);
-        } else {
-            chat = chatRepository.findById(messageRequest.chatId())
-                    .orElseThrow(() -> new NotFoundException(String.format("Чат с идентификатором %s не найден!", messageRequest.chatId())));
-            chat.setUser(user);
-            user.addChat(chat);
+
+        if (messageRequest.chatId() == null){
+            User user1 = userRepository.findById(messageRequest.userId())
+                    .orElseThrow(()-> new NotFoundException("User with Id not found " + messageRequest.userId()));
+
+            Chat chat = new Chat();
+            Message message = new Message();
+            message.setMessage(messageRequest.message());
+            if (user.getRole().name().equals("MANAGER")){
+                message.setManager(true);
+                chat.setManager(managerRepository.findById(user1.getId())
+                        .orElseThrow(()-> new NotFoundException("User with Id not found " + messageRequest.userId())));
+            }
+
+            chat.addMessage(message);
+
+            message.setChat(chat);
+
+        }else {
+            Chat chat = chatRepository.findById(messageRequest.chatId())
+                    .orElseThrow(()-> new NotFoundException("User with Id not found " + messageRequest.userId()));
+
+            Message message = new Message();
+            message.setMessage(messageRequest.message());
+
+            if (user.getRole().name().equals("MANAGER")){
+                message.setManager(true);
+                chat.setManager(managerRepository.findById(chat.getUser().getId())
+                        .orElseThrow(()-> new NotFoundException("User with Id not found " + messageRequest.userId())));
+            }
+
+
+
         }
-
-        Message message = new Message();
-        message.setMessage(messageRequest.message());
-        message.setChat(chat);
-        message.setManager(messageRequest.chatId() == 0);
-
-        chat.addMessage(message);
-        chatRepository.save(chat);
 
         return SimpleResponse.builder()
                 .httpStatus(HttpStatus.OK)
@@ -65,10 +82,6 @@ public class ChatServiceImpl implements ChatService {
                 .build();
     }
 
-//    @Override
-//    public List<NewMessageResponse> hasNewMessage() {
-//        return customChatRepository.hasNewMessage();
-//    }
 
     @Override
     public List<ChatResponse> findAll() {

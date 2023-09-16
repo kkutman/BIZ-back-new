@@ -4,11 +4,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kg.BIZ.dto.request.MessageRequest;
 import kg.BIZ.dto.response.ChatResponse;
-import kg.BIZ.dto.response.NewMessageResponse;
 import kg.BIZ.dto.response.SimpleResponse;
 import kg.BIZ.service.ChatService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,7 +18,6 @@ import java.util.List;
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class ChatApi {
     private final ChatService chatService;
-
 
     @Operation(summary = "Get all chats", description = "This is the method to return all chats")
     @GetMapping

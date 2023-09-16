@@ -7,6 +7,7 @@ import kg.BIZ.dto.request.VacancyRequest;
 import kg.BIZ.dto.response.SimpleResponse;
 import kg.BIZ.service.VacancyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,7 +20,22 @@ public class VacancyApi {
     private final VacancyService vacancyService;
     @PostMapping
     @Operation(summary = "Save vacancy", description = "This method save vacancy!")
-    public SimpleResponse saveBanner(@RequestBody @Valid VacancyRequest request, Authentication authentication) {
-        return vacancyService.saveVacancy(request, authentication);
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
+    public SimpleResponse saveVacancy(@RequestBody @Valid VacancyRequest request) {
+        return vacancyService.saveVacancy(request);
+    }
+
+    @PutMapping
+    @Operation(summary = "Updated vacancy",description = "This method updated vacancy")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
+    public SimpleResponse updatedVacancy(@RequestParam Long vacancyId, @RequestBody @Valid VacancyRequest request){
+        return vacancyService.updatedVacancy(request, vacancyId);
+    }
+
+    @DeleteMapping
+    @Operation(summary = "Deleted vacancy", description = "This method deleted vacancy")
+    @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
+    public SimpleResponse deletedVacancy(@RequestParam Long vacancyId){
+        return vacancyService.deletedVacancy(vacancyId);
     }
 }
