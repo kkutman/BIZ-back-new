@@ -92,14 +92,16 @@ public class VacancyServiceImpl implements VacancyService {
     @Override
     public List<ResponseVacancy> getAllVacancy() {
         List<ResponseVacancy> getAllVacancy = new ArrayList<>();
-        List<Vacancy>vacancies = vacancyRepository.findAll();
+        List<Vacancy> vacancies = vacancyRepository.findAll();
         for (Vacancy vacancy : vacancies) {
             if (vacancy.isActive()) {
-                getAllVacancy.add(ResponseVacancy.builder()
-                        .aboutVacancy(vacancy.getRequirement())
-                        .date(vacancy.getCreatedAt())
-                        .companyName(vacancy.getCompanyName())
-                        .build());
+                getAllVacancy.add(
+                        ResponseVacancy.builder()
+                                .id(vacancy.getId())
+                                .aboutVacancy(vacancy.getRequirement())
+                                .date(vacancy.getCreatedAt())
+                                .companyName(vacancy.getCompanyName())
+                                .build());
             }
         }
         return getAllVacancy;
@@ -109,22 +111,22 @@ public class VacancyServiceImpl implements VacancyService {
     public SimpleResponse acceptRequest(Long id) {
         Vacancy vacancy = vacancyRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format("Vacancy with id %s not found!", id)));
-        if (!vacancy.isActive()){
+        if (!vacancy.isActive()) {
             vacancy.setActive(true);
             vacancyRepository.save(vacancy);
         }
-        return new SimpleResponse(HttpStatus.OK,"Request successfully accepted!");
+        return new SimpleResponse(HttpStatus.OK, "Request successfully accepted!");
     }
 
     @Override
     public SimpleResponse respond(Long id) {
         Vacancy vacancy = vacancyRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format("Vacancy with id %s not found!", id)));
-        if (vacancy.getVolunteers()==null){
+        if (vacancy.getVolunteers() == null) {
             vacancy.setVolunteers(new ArrayList<>());
         }
         vacancy.getVolunteers().add(getAuthenticate().getVolunteer());
         vacancyRepository.save(vacancy);
-        return new SimpleResponse(HttpStatus.OK,"Respond successfully");
+        return new SimpleResponse(HttpStatus.OK, "Respond successfully");
     }
 }
