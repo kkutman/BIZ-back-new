@@ -1,6 +1,7 @@
 package kg.BIZ.service.impl;
 
 import kg.BIZ.dto.request.VacancyRequest;
+import kg.BIZ.dto.response.ResponseVacancy;
 import kg.BIZ.dto.response.SimpleResponse;
 import kg.BIZ.dto.response.VacancyResponse;
 import kg.BIZ.exception.exceptions.NotFoundException;
@@ -19,13 +20,14 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class VacancyServiceImpl implements VacancyService {
     private final VacancyRepository vacancyRepository;
-    private final AuthenticationService authenticationService;
     private final UserRepository userRepository;
 
     public User getAuthenticate() {
@@ -85,5 +87,19 @@ public class VacancyServiceImpl implements VacancyService {
                 .location(vacancy.getLocation())
                 .phoneNumber(vacancy.getPhoneNumber())
                 .build();
+    }
+
+    @Override
+    public List<ResponseVacancy> getAllVacancy() {
+        List<ResponseVacancy> getAllVacancy = new ArrayList<>();
+        List<Vacancy>vacancies = vacancyRepository.findAll();
+        for (Vacancy vacancy : vacancies) {
+            getAllVacancy.add(ResponseVacancy.builder()
+                    .aboutVacancy(vacancy.getRequirement())
+                    .date(vacancy.getCreatedAt())
+                    .companyName(vacancy.getCompanyName())
+                    .build());
+        }
+        return getAllVacancy;
     }
 }
