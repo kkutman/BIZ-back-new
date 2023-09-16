@@ -11,7 +11,7 @@ public interface VacancyService {
     SimpleResponse updatedVacancy(VacancyRequest request,Long id);
     SimpleResponse deletedVacancy(Long id);
     VacancyResponse getById(Long id);
-    List<ResponseVacancy> getAllVacancy();
+    List<ResponseVacancy> getAllVacancy(Boolean trueOrFalse);
     SimpleResponse acceptRequest(Long id);
     SimpleResponse respond(Long id);
 }
