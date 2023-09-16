@@ -22,6 +22,7 @@ import java.util.List;
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class VacancyApi {
     private final VacancyService vacancyService;
+
     @PostMapping
     @Operation(summary = "Save vacancy", description = "This method save vacancy!")
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
@@ -30,30 +31,36 @@ public class VacancyApi {
     }
 
     @PutMapping
-    @Operation(summary = "Updated vacancy",description = "This method updated vacancy")
+    @Operation(summary = "Updated vacancy", description = "This method updated vacancy")
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
-    public SimpleResponse updatedVacancy(@RequestParam Long vacancyId, @RequestBody @Valid VacancyRequest request){
+    public SimpleResponse updatedVacancy(@RequestParam Long vacancyId, @RequestBody @Valid VacancyRequest request) {
         return vacancyService.updatedVacancy(request, vacancyId);
     }
 
     @DeleteMapping
     @Operation(summary = "Deleted vacancy", description = "This method deleted vacancy")
     @PreAuthorize("hasAnyAuthority('ADMIN','MANAGER')")
-    public SimpleResponse deletedVacancy(@RequestParam Long vacancyId){
+    public SimpleResponse deletedVacancy(@RequestParam Long vacancyId) {
         return vacancyService.deletedVacancy(vacancyId);
     }
 
     @GetMapping
     @Operation(summary = "Get by vacancy", description = "This method get by id vacancy")
-    public VacancyResponse getById(@RequestParam Long vacancyId){
+    public VacancyResponse getById(@RequestParam Long vacancyId) {
         return vacancyService.getById(vacancyId);
     }
 
     @GetMapping("/get_all")
     @Operation(summary = "Get all vacancy", description = "This method get all vacancy")
-    public List<ResponseVacancy> getAll(){
+    public List<ResponseVacancy> getAll() {
         return vacancyService.getAllVacancy();
     }
 
+    @PutMapping("/accept")
+    @PreAuthorize("hasAnyAuthority('ADMIN')")
+    @Operation(summary = "Accept request", description = "This method accept request")
+    public SimpleResponse acceptRequest(@RequestParam Long vacancyId) {
+        return vacancyService.acceptRequest(vacancyId);
+    }
 
 }
