@@ -12,6 +12,7 @@ import kg.BIZ.repository.UserRepository;
 import kg.BIZ.repository.VacancyRepository;
 import kg.BIZ.service.EmailService;
 import kg.BIZ.service.VacancyService;
+import kg.BIZ.service.VolunteerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -30,6 +31,7 @@ public class VacancyServiceImpl implements VacancyService {
     private final VacancyRepository vacancyRepository;
     private final UserRepository userRepository;
     private final EmailService emailService;
+    private final VolunteerService volunteerService;
 
     public User getAuthenticate() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -119,13 +121,15 @@ public class VacancyServiceImpl implements VacancyService {
         if (!vacancy.isActive()) {
             vacancy.setActive(true);
             vacancyRepository.save(vacancy);
-            emailService.sendEmail(vacancy.getEmail(),"Вакансия!","Успешно принято");
         }
+
         return new SimpleResponse(HttpStatus.OK, "Request successfully accepted!");
     }
 
     @Override
     public SimpleResponse respond(Long id) {
+        User user = getAuthenticate();
+
         Vacancy vacancy = vacancyRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format("Vacancy with id %s not found!", id)));
         if (vacancy.getVolunteers() == null) {
@@ -139,6 +143,9 @@ public class VacancyServiceImpl implements VacancyService {
                 rr = false;
             }
         }
+
+        volunteerService.acceptVacancy(user.getVolunteer().getId(), vacancy.getId());
+
         if (rr) {
             return new SimpleResponse(HttpStatus.OK, "Respond successfully");
         }else {

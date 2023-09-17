@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -45,4 +46,11 @@ public class Vacancy {
 
     @OneToMany
     List<Volunteer>volunteers;
+
+    public void addVolunteer(Volunteer volunteer) {
+        if (this.volunteers == null) {
+            this.volunteers = new ArrayList<>();
+        }
+        this.volunteers.add(volunteer);
+    }
 }
