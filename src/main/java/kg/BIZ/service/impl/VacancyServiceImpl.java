@@ -80,6 +80,8 @@ public class VacancyServiceImpl implements VacancyService {
                 () -> new NotFoundException(String.format("Vacancy with id %s not found!", id)));
 
         return VacancyResponse.builder()
+                .id(vacancy.getId())
+                .managerId(vacancy.getUser().getManager().getId())
                 .companyName(vacancy.getCompanyName())
                 .description(vacancy.getRequirement())
                 .email(vacancy.getEmail())
