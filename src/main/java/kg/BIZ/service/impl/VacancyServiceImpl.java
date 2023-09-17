@@ -7,6 +7,7 @@ import kg.BIZ.dto.response.VacancyResponse;
 import kg.BIZ.exception.exceptions.NotFoundException;
 import kg.BIZ.model.User;
 import kg.BIZ.model.Vacancy;
+import kg.BIZ.model.Volunteer;
 import kg.BIZ.repository.UserRepository;
 import kg.BIZ.repository.VacancyRepository;
 import kg.BIZ.service.AuthenticationService;
@@ -129,8 +130,18 @@ public class VacancyServiceImpl implements VacancyService {
         if (vacancy.getVolunteers() == null) {
             vacancy.setVolunteers(new ArrayList<>());
         }
-        vacancy.getVolunteers().add(getAuthenticate().getVolunteer());
-        vacancyRepository.save(vacancy);
-        return new SimpleResponse(HttpStatus.OK, "Respond successfully");
+        boolean rr = true;
+        for (Volunteer volunteer : vacancy.getVolunteers()) {
+            if (!volunteer.equals(getAuthenticate().getVolunteer())) {
+                vacancy.getVolunteers().add(getAuthenticate().getVolunteer());
+                vacancyRepository.save(vacancy);
+                rr = false;
+            }
+        }
+        if (rr) {
+            return new SimpleResponse(HttpStatus.OK, "Respond successfully");
+        }else {
+            return new SimpleResponse(HttpStatus.BAD_REQUEST,"уже сохранен!");
+        }
     }
 }
