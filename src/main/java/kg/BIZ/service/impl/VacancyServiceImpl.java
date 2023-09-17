@@ -9,6 +9,8 @@ import kg.BIZ.model.User;
 import kg.BIZ.model.Vacancy;
 import kg.BIZ.repository.UserRepository;
 import kg.BIZ.repository.VacancyRepository;
+import kg.BIZ.service.AuthenticationService;
+import kg.BIZ.service.EmailService;
 import kg.BIZ.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,6 +29,7 @@ import java.util.List;
 public class VacancyServiceImpl implements VacancyService {
     private final VacancyRepository vacancyRepository;
     private final UserRepository userRepository;
+    private final EmailService emailService;
 
     public User getAuthenticate() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -114,6 +117,7 @@ public class VacancyServiceImpl implements VacancyService {
         if (!vacancy.isActive()) {
             vacancy.setActive(true);
             vacancyRepository.save(vacancy);
+            emailService.sendEmail(vacancy.getEmail(),"Вакансия!","Успешно принято");
         }
         return new SimpleResponse(HttpStatus.OK, "Request successfully accepted!");
     }
