@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.List;
+
 import static jakarta.persistence.CascadeType.ALL;
 
 @Getter
@@ -16,14 +18,14 @@ import static jakarta.persistence.CascadeType.ALL;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Manager {
     @Id
-    @SequenceGenerator(name = "manger_gen", sequenceName = "manager_seq",
-            allocationSize = 1, initialValue = 6)
+    @SequenceGenerator(name = "manager_gen", sequenceName = "manager_seq", allocationSize = 1, initialValue = 6)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "manager_gen")
     Long id;
 
-    @OneToOne(cascade = ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     User user;
-    @OneToOne(cascade = ALL)
-    private Chat chat;
+
+    @OneToMany(mappedBy = "manager")
+    List<Chat> chats;
 }

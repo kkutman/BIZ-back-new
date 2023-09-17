@@ -22,12 +22,16 @@ public class Chat {
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "chat_gen")
     @SequenceGenerator(name = "chat_gen", sequenceName = "chat_seq", allocationSize = 1)
     Long id;
-    @OneToMany(mappedBy = "chat", cascade = ALL)
-    List<Message> messages;
-    @OneToOne(mappedBy = "chat", cascade = {MERGE, PERSIST, DETACH, REFRESH})
+
+    @OneToMany(mappedBy = "chat", cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Message> messages = new ArrayList<>(); // Initialize the collection
+
+    @ManyToOne
+    @JoinColumn(name = "volunteer_id")
+    Volunteer volunteer;
+    @ManyToOne
+    @JoinColumn(name = "manager_id")
     Manager manager;
-    @ManyToOne(cascade = {MERGE, PERSIST, DETACH, REFRESH})
-    User user;
 
     public void addMessage(Message message) {
         if (this.messages == null) {
@@ -35,4 +39,5 @@ public class Chat {
         }
         this.messages.add(message);
     }
+
 }

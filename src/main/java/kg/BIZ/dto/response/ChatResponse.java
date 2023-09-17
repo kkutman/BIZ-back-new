@@ -13,6 +13,8 @@ import java.util.List;
 @AllArgsConstructor
 public class ChatResponse {
     private Long id;
+    private Long userId;
+    private Long managerId;
     private String fullName;
     private List<MessageResponse> messages;
 }

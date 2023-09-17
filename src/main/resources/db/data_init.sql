@@ -10,8 +10,8 @@ values (1, 'https://bilingualbucket.s3.eu-central-1.amazonaws.com/1694896206711i
      (2, 'https://bilingualbucket.s3.eu-central-1.amazonaws.com/1694896206711images.jpeg'),
      (3, 'https://bilingualbucket.s3.eu-central-1.amazonaws.com/1694896206711images.jpeg');
 
-insert into manager (id, user_id, chat_id)
-values (2, 2, null);
+insert into manager (id, user_id)
+values (2, 2);
 
 
 insert into vacancy (id, company_name, created_at, email, is_active, phone_number, requirement, user_id)

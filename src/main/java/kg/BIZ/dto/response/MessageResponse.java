@@ -14,4 +14,6 @@ public class MessageResponse {
     private Long id;
     private String message;
     private Boolean isManager;
+    private Long senderUserId;
+    private Long recipientUserId;
 }

@@ -24,5 +24,10 @@ public class Message {
     @ManyToOne(cascade = {PERSIST, MERGE, REFRESH, DETACH})
     Chat chat;
     boolean isManager;
-    boolean isNewMessage;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    User sender;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    User recipient;
 }
