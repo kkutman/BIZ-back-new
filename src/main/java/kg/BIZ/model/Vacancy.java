@@ -19,7 +19,7 @@ public class Vacancy {
 
     @Id
     @SequenceGenerator(name = "vacancy_gen", sequenceName = "vacancy_seq",
-            allocationSize = 1, initialValue = 6)
+            allocationSize = 1, initialValue = 10)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vacancy_gen")
     Long id;
 
