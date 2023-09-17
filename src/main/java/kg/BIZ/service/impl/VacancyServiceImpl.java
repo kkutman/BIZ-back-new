@@ -10,7 +10,6 @@ import kg.BIZ.model.Vacancy;
 import kg.BIZ.model.Volunteer;
 import kg.BIZ.repository.UserRepository;
 import kg.BIZ.repository.VacancyRepository;
-import kg.BIZ.service.AuthenticationService;
 import kg.BIZ.service.EmailService;
 import kg.BIZ.service.VacancyService;
 import lombok.RequiredArgsConstructor;
@@ -83,6 +82,7 @@ public class VacancyServiceImpl implements VacancyService {
         Vacancy vacancy = vacancyRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format("Vacancy with id %s not found!", id)));
 
+
         return VacancyResponse.builder()
                 .id(vacancy.getId())
                 .managerId(vacancy.getUser().getManager().getId())
@@ -93,6 +93,7 @@ public class VacancyServiceImpl implements VacancyService {
                 .phoneNumber(vacancy.getPhoneNumber())
                 .build();
     }
+
 
     @Override
     public List<ResponseVacancy> getAllVacancy(Boolean trueOrFalse) {
