@@ -13,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class VacancyRequestResponse {
+    private Long vacancyId;
     private String vacancyName;
     private List<VolunteerRequestResponse> volunteerRequestResponses;
 }
