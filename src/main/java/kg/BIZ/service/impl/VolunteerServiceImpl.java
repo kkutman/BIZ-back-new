@@ -38,7 +38,7 @@ public class VolunteerServiceImpl implements VolunteerService {
 
         List<VacancyRequestResponse> vacancyRequestResponses = new ArrayList<>();
 
-        for (Vacancy vacancy : user.getVacancy()) {
+        for (Vacancy vacancy : vacancyRepository.findAllByUser(user)) {
             VacancyRequestResponse vacancyRequestResponse = new VacancyRequestResponse();
             vacancyRequestResponse.setVacancyName(vacancy.getCompanyName());
 

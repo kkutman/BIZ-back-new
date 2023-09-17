@@ -128,7 +128,6 @@ public class VacancyServiceImpl implements VacancyService {
 
     @Override
     public SimpleResponse respond(Long id) {
-        User user = getAuthenticate();
 
         Vacancy vacancy = vacancyRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format("Vacancy with id %s not found!", id)));
@@ -143,8 +142,6 @@ public class VacancyServiceImpl implements VacancyService {
                 rr = false;
             }
         }
-
-        volunteerService.acceptVacancy(user.getVolunteer().getId(), vacancy.getId());
 
         if (rr) {
             return new SimpleResponse(HttpStatus.OK, "Respond successfully");
