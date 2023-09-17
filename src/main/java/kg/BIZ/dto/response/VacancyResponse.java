@@ -4,6 +4,8 @@ import lombok.Builder;
 
 @Builder
 public record VacancyResponse(
+        Long id,
+        Long managerId,
         String companyName,
         String description,
         String email,

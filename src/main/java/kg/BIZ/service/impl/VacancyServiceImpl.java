@@ -15,7 +15,6 @@ import kg.BIZ.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -82,7 +81,10 @@ public class VacancyServiceImpl implements VacancyService {
     public VacancyResponse getById(Long id) {
         Vacancy vacancy = vacancyRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format("Vacancy with id %s not found!", id)));
+
         return VacancyResponse.builder()
+                .id(vacancy.getId())
+                .managerId(vacancy.getUser().getManager().getId())
                 .companyName(vacancy.getCompanyName())
                 .description(vacancy.getRequirement())
                 .email(vacancy.getEmail())
