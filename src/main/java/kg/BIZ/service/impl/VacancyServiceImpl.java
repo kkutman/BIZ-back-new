@@ -81,6 +81,7 @@ public class VacancyServiceImpl implements VacancyService {
         Vacancy vacancy = vacancyRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format("Vacancy with id %s not found!", id)));
         return VacancyResponse.builder()
+                .id(vacancy.getId())
                 .companyName(vacancy.getCompanyName())
                 .description(vacancy.getRequirement())
                 .email(vacancy.getEmail())
