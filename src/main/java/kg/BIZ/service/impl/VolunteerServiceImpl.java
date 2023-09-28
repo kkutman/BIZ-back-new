@@ -2,6 +2,7 @@ package kg.BIZ.service.impl;
 
 import jakarta.transaction.Transactional;
 import kg.BIZ.config.jwt.JwtService;
+import kg.BIZ.dto.request.AboutMeForVolunteerRequest;
 import kg.BIZ.dto.response.SimpleResponse;
 import kg.BIZ.dto.response.VacancyRequestResponse;
 import kg.BIZ.dto.response.VolunteerRequestResponse;
@@ -19,6 +20,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Service
@@ -66,20 +68,45 @@ public class VolunteerServiceImpl implements VolunteerService {
 
     @Override
     public SimpleResponse acceptVacancy(Long volunteerId, Long vacancyId) {
-
         Volunteer volunteer = volunteerRepository.findById(volunteerId)
                 .orElseThrow(() -> new NotFoundException("Volunteer with ID not found "));
 
         Vacancy vacancy = vacancyRepository.findById(vacancyId)
                 .orElseThrow(() -> new NotFoundException("Manager with ID not found "));
 
-        vacancy.addVolunteer(volunteer);
-        vacancyRepository.save(vacancy);
+        Iterator<Volunteer> iterator = vacancy.getVolunteers().iterator();
+        while (iterator.hasNext()) {
+            Volunteer volunteer1 = iterator.next();
+            if (volunteer1 == volunteer) {
+                iterator.remove(); // Safely remove the element
+                if (vacancy.getCountOfVolunteers() != 0) {
+                    vacancy.setCountOfVolunteers(vacancy.getCountOfVolunteers() - 1);
+                } else {
+                    vacancyRepository.deleteById(vacancy.getId());
+                }
+            }
+        }
 
-        emailService.sendEmail(volunteer.getUser().getEmail(), "Вакансия!","Успешно принято");
+        emailService.sendEmail(volunteer.getUser().getEmail(), "Вакансия!", "Успешно принято");
 
         return SimpleResponse.builder().httpStatus(HttpStatus.OK).message("volunteer was successfully accepted").build();
     }
 
+    @Override
+    public SimpleResponse aboutMe(AboutMeForVolunteerRequest aboutMeForVolunteerRequest) {
 
+        User user = jwtService.getAuthenticate();
+        Volunteer volunteer = volunteerRepository.findByUserId(user.getId())
+                .orElseThrow(() -> new NotFoundException("Volunteer with ID not found "));
+
+        volunteer.setLocation(aboutMeForVolunteerRequest.location());
+        volunteer.setMotivation(aboutMeForVolunteerRequest.motivation());
+        volunteer.setExperience(aboutMeForVolunteerRequest.experience());
+        volunteer.setSkills(aboutMeForVolunteerRequest.skills());
+        volunteer.setStrengths(aboutMeForVolunteerRequest.strengths());
+        volunteer.setBusyness(aboutMeForVolunteerRequest.busyness());
+        volunteer.setSocialMediaPages(aboutMeForVolunteerRequest.socialMediaPages());
+
+        return SimpleResponse.builder().httpStatus(HttpStatus.OK).message("volunteer was successfully updated").build();
+    }
 }

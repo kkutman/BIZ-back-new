@@ -10,6 +10,7 @@ import kg.BIZ.model.Vacancy;
 import kg.BIZ.model.Volunteer;
 import kg.BIZ.repository.UserRepository;
 import kg.BIZ.repository.VacancyRepository;
+import kg.BIZ.repository.VolunteerRepository;
 import kg.BIZ.service.EmailService;
 import kg.BIZ.service.VacancyService;
 import kg.BIZ.service.VolunteerService;
@@ -28,6 +29,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class VacancyServiceImpl implements VacancyService {
+    private final VolunteerRepository volunteerRepository;
     private final VacancyRepository vacancyRepository;
     private final UserRepository userRepository;
     private final EmailService emailService;
@@ -52,6 +54,7 @@ public class VacancyServiceImpl implements VacancyService {
                 .createdAt(LocalDate.now())
                 .requirement(request.requirement())
                 .location(request.location())
+                .countOfVolunteers(request.countOfVolunteers())
                 .isActive(false)
                 .user(user)
                 .email(user.getEmail())
@@ -68,6 +71,7 @@ public class VacancyServiceImpl implements VacancyService {
         if (request.requirement() != null) vacancy.setRequirement(request.requirement());
         if (request.phoneNumber() != null) vacancy.setPhoneNumber(request.phoneNumber());
         if (request.location() != null) vacancy.setLocation(request.location());
+        if (request.countOfVolunteers() != 0) vacancy.setCountOfVolunteers(request.countOfVolunteers());
         vacancyRepository.save(vacancy);
         return new SimpleResponse(HttpStatus.OK, "Vacancy successfully updated!");
     }
@@ -83,7 +87,6 @@ public class VacancyServiceImpl implements VacancyService {
     public VacancyResponse getById(Long id) {
         Vacancy vacancy = vacancyRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format("Vacancy with id %s not found!", id)));
-
 
         return VacancyResponse.builder()
                 .id(vacancy.getId())
@@ -128,6 +131,9 @@ public class VacancyServiceImpl implements VacancyService {
 
     @Override
     public SimpleResponse respond(Long id) {
+        User user = getAuthenticate();
+        Volunteer volunteer1 = volunteerRepository.findByUserId(user.getId()).orElseThrow(
+                ()-> new NotFoundException(String.format("Volunteer with id %s not found!", id)));
 
         Vacancy vacancy = vacancyRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format("Vacancy with id %s not found!", id)));
@@ -136,14 +142,14 @@ public class VacancyServiceImpl implements VacancyService {
         }
         boolean rr = true;
         for (Volunteer volunteer : vacancy.getVolunteers()) {
-            if (!volunteer.equals(getAuthenticate().getVolunteer())) {
-                vacancy.getVolunteers().add(getAuthenticate().getVolunteer());
-                vacancyRepository.save(vacancy);
+            if (!volunteer.getId().equals(volunteer1.getId())) {
                 rr = false;
+                break;
             }
         }
-
         if (rr) {
+            vacancy.addVolunteer(volunteer1);
+            vacancyRepository.save(vacancy);
             return new SimpleResponse(HttpStatus.OK, "Respond successfully");
         }else {
             return new SimpleResponse(HttpStatus.BAD_REQUEST,"уже сохранен!");

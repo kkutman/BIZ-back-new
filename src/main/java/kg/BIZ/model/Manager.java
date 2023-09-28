@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static jakarta.persistence.CascadeType.ALL;
@@ -28,4 +29,9 @@ public class Manager {
 
     @OneToMany(mappedBy = "manager")
     List<Chat> chats;
+    String directorOfCompany;
+    String companySlogan;
+    LocalDate creatingYear;
+    String scopeOfWork;
+    String description;
 }

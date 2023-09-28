@@ -1,6 +1,8 @@
 package kg.BIZ.api;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import kg.BIZ.dto.request.AboutMeForVolunteerRequest;
 import kg.BIZ.dto.response.SimpleResponse;
 import kg.BIZ.dto.response.VacancyRequestResponse;
 import kg.BIZ.service.VolunteerService;
@@ -24,8 +26,14 @@ public class VolunteerApi {
     }
 
     @PutMapping("/{volunteerId}/{vacancyId}")
+    @Operation(summary = "accept vacancy", description = "This method for taking volunteer for company by manager!")
     public SimpleResponse acceptVacancy(@PathVariable Long volunteerId,@PathVariable Long vacancyId){
         return volunteerService.acceptVacancy(volunteerId, vacancyId);
     }
 
+    @PutMapping("/aboutMe")
+    @Operation(summary = "about me", description = "This method for adding some fields for volunteer")
+    public SimpleResponse aboutMe(@RequestBody AboutMeForVolunteerRequest aboutMeForVolunteerRequest){
+        return volunteerService.aboutMe(aboutMeForVolunteerRequest);
+    }
 }

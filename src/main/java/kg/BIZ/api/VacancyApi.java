@@ -10,7 +10,6 @@ import kg.BIZ.dto.response.VacancyResponse;
 import kg.BIZ.service.VacancyService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -68,5 +67,12 @@ public class VacancyApi {
     @Operation(summary = "Respond request", description = "This method respond request")
     public SimpleResponse respond(@RequestParam Long vacancyId) {
         return vacancyService.respond(vacancyId);
+    }
+
+    @PutMapping("/acceptByManager")
+    @PreAuthorize("hasAnyAuthority('MANAGER')")
+    @Operation(summary = "Accept request", description = "This method accept request")
+    public SimpleResponse acceptRequestByManager(@RequestParam Long volunteerId) {
+        return vacancyService.acceptRequest(volunteerId);
     }
 }

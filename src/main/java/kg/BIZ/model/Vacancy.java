@@ -43,6 +43,7 @@ public class Vacancy {
     User user;
 
     boolean isActive;
+    int countOfVolunteers;
 
     @OneToMany
     List<Volunteer>volunteers;

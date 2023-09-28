@@ -31,4 +31,12 @@ public class Volunteer {
     @OneToMany(mappedBy = "volunteer")
     List<Chat> chats;
 
+    String location;
+    String motivation;
+    String experience;
+    String skills;
+    String strengths;
+    String busyness;
+    String socialMediaPages;
+
 }

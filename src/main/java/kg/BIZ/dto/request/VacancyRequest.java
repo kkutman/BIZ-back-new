@@ -7,6 +7,7 @@ public record VacancyRequest(
         String companyName,
         String phoneNumber,
         String requirement,
-        String location
+        String location,
+        int countOfVolunteers
 ) {
 }
