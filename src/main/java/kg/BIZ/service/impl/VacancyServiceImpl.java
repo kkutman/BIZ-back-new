@@ -11,9 +11,7 @@ import kg.BIZ.model.Volunteer;
 import kg.BIZ.repository.UserRepository;
 import kg.BIZ.repository.VacancyRepository;
 import kg.BIZ.repository.VolunteerRepository;
-import kg.BIZ.service.EmailService;
 import kg.BIZ.service.VacancyService;
-import kg.BIZ.service.VolunteerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -32,8 +30,6 @@ public class VacancyServiceImpl implements VacancyService {
     private final VolunteerRepository volunteerRepository;
     private final VacancyRepository vacancyRepository;
     private final UserRepository userRepository;
-    private final EmailService emailService;
-    private final VolunteerService volunteerService;
 
     public User getAuthenticate() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -133,26 +129,18 @@ public class VacancyServiceImpl implements VacancyService {
     public SimpleResponse respond(Long id) {
         User user = getAuthenticate();
         Volunteer volunteer1 = volunteerRepository.findByUserId(user.getId()).orElseThrow(
-                ()-> new NotFoundException(String.format("Volunteer with id %s not found!", id)));
+                () -> new NotFoundException(String.format("Volunteer with id %s not found!", id)));
 
         Vacancy vacancy = vacancyRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format("Vacancy with id %s not found!", id)));
-        if (vacancy.getVolunteers() == null) {
-            vacancy.setVolunteers(new ArrayList<>());
-        }
-        boolean rr = true;
-        for (Volunteer volunteer : vacancy.getVolunteers()) {
-            if (!volunteer.getId().equals(volunteer1.getId())) {
-                rr = false;
-                break;
-            }
-        }
-        if (rr) {
+
+        if (vacancy.getVolunteers() == null || !vacancy.getVolunteers().contains(volunteer1)) {
             vacancy.addVolunteer(volunteer1);
             vacancyRepository.save(vacancy);
             return new SimpleResponse(HttpStatus.OK, "Respond successfully");
-        }else {
-            return new SimpleResponse(HttpStatus.BAD_REQUEST,"уже сохранен!");
+        } else {
+            return new SimpleResponse(HttpStatus.BAD_REQUEST, "уже сохранен!");
         }
     }
+
 }

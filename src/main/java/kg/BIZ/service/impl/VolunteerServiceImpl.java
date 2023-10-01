@@ -79,10 +79,10 @@ public class VolunteerServiceImpl implements VolunteerService {
             Volunteer volunteer1 = iterator.next();
             if (volunteer1 == volunteer) {
                 iterator.remove(); // Safely remove the element
-                if (vacancy.getCountOfVolunteers() != 0) {
-                    vacancy.setCountOfVolunteers(vacancy.getCountOfVolunteers() - 1);
-                } else {
+                if (vacancy.getCountOfVolunteers() == 1) {
                     vacancyRepository.deleteById(vacancy.getId());
+                } else {
+                    vacancy.setCountOfVolunteers(vacancy.getCountOfVolunteers() - 1);
                 }
             }
         }
