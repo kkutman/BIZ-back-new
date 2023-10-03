@@ -8,7 +8,7 @@ import kg.BIZ.validation.PhoneNumberValid;
 import lombok.Builder;
 
 @Builder
-public record RegisterRequest (
+public record VolunteerRegisterRequest (
         @NameValid(message = "Имя должно содержать от 2 до 33 символов.")
         @NotBlank(message = "Необходимо указать имя.")
         String firstName,
@@ -23,7 +23,6 @@ public record RegisterRequest (
         @PasswordValid(message = "Длина пароля должна быть более 8 символов и содержать как минимум одну заглавную букву!")
         @NotBlank(message = "Пароль не должен быть пустым")
         String password,
-        String role,
         int age
 ) {
 

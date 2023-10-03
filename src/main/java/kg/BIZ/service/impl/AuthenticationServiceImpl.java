@@ -3,7 +3,8 @@ package kg.BIZ.service.impl;
 import jakarta.transaction.Transactional;
 import kg.BIZ.config.jwt.JwtService;
 import kg.BIZ.dto.request.AuthenticateRequest;
-import kg.BIZ.dto.request.RegisterRequest;
+import kg.BIZ.dto.request.CompanyRegisterRequest;
+import kg.BIZ.dto.request.VolunteerRegisterRequest;
 import kg.BIZ.dto.response.AuthenticationResponse;
 import kg.BIZ.exception.exceptions.*;
 import kg.BIZ.model.Manager;
@@ -22,7 +23,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -45,7 +45,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         });
     }
     @Override
-    public AuthenticationResponse register(RegisterRequest request) {
+    public AuthenticationResponse volunteerRegister(VolunteerRegisterRequest request) {
         if (userRepository.existsByEmail(request.email())) {
             log.error(String.format("Пользователь с адресом электронной почты %s уже существует", request.email()));
             throw new AlreadyExistException(String.format("Пользователь с адресом электронной почты %s уже существует", request.email()));
@@ -61,15 +61,50 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 .phoneNumber(request.phoneNumber())
                 .email(request.email())
                 .password(passwordEncoder.encode(request.password()))
-                .role(Role.valueOf(request.role()))
+                .role(Role.VOLUNTEER)
                 .createdAt(LocalDate.now())
                 .build();
 
-        if (request.role().equalsIgnoreCase(Role.VOLUNTEER.name())){
-            user.setVolunteer(Volunteer.builder().age(request.age()).user(user).build());
-        }else if (request.role().equalsIgnoreCase(Role.MANAGER.name())){
-            user.setManager(Manager.builder().user(user).build());
+        user.setVolunteer(Volunteer.builder().age(request.age()).user(user).build());
+
+        userRepository.save(user);
+        log.info(String.format("Пользователь %s успешно сохранен!", user.getEmail()));
+        String token = jwtService.generateToken(user);
+
+        return AuthenticationResponse.builder()
+                .email(user.getEmail())
+                .role(user.getRole())
+                .token(token)
+                .build();
+    }
+
+    @Override
+    public AuthenticationResponse companyRegister(CompanyRegisterRequest companyRegisterAuthRequest) {
+        if (userRepository.existsByEmail(companyRegisterAuthRequest.email())) {
+            log.error(String.format("Компания с адресом электронной почты %s уже существует", companyRegisterAuthRequest.email()));
+            throw new AlreadyExistException(String.format("Компания с адресом электронной почты %s уже существует", companyRegisterAuthRequest.email()));
         }
+        String split = companyRegisterAuthRequest.email().split("@")[0];
+        if (split.equals(companyRegisterAuthRequest.password())) {
+            throw new BadRequestException("Создайте более надежный пароль");
+        }
+
+        User user = User.builder()
+                .firstName(companyRegisterAuthRequest.firstName())
+                .lastName(companyRegisterAuthRequest.lastName())
+                .phoneNumber(companyRegisterAuthRequest.phoneNumber())
+                .email(companyRegisterAuthRequest.email())
+                .password(passwordEncoder.encode(companyRegisterAuthRequest.password()))
+                .role(Role.MANAGER)
+                .createdAt(LocalDate.now())
+                .build();
+
+        user.setManager(Manager.builder().
+                user(user)
+                        .companyName(companyRegisterAuthRequest.companyName())
+                .build());
+
+
 
         userRepository.save(user);
         log.info(String.format("Пользователь %s успешно сохранен!", user.getEmail()));
