@@ -40,7 +40,7 @@ public class ChatServiceImpl implements ChatService {
 
         if (messageRequest.volunteerId() == 0 && sender != null && sender.getRole() != Role.MANAGER) {
             messageRequest = messageRequest.withVolunteerId(sender.getId());
-            manager = managerRepository.findByUserId(messageRequest.managerId())
+            manager = managerRepository.findUserById(messageRequest.managerId())
                     .orElseThrow(() -> new NotFoundException("Manager with ID not found "));
             volunteer = volunteerRepository.findByUserId(sender.getId())
                     .orElseThrow(() -> new NotFoundException("Volunteer with ID not found "));
@@ -49,7 +49,7 @@ public class ChatServiceImpl implements ChatService {
         if (messageRequest.managerId() == 0 && sender != null && sender.getRole() == Role.MANAGER) {
             messageRequest = messageRequest.withManagerId(sender.getId());
             volunteer = volunteerRepository.findByUserId(messageRequest.volunteerId()).orElseThrow(() -> new NotFoundException("Volunteer with ID not found "));
-            manager = managerRepository.findByUserId(sender.getId())
+            manager = managerRepository.findUserById(sender.getId())
                     .orElseThrow(() -> new NotFoundException("Manager with ID not found "));
         }
 

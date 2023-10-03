@@ -5,7 +5,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
 import kg.BIZ.dto.request.AuthenticateRequest;
-import kg.BIZ.dto.request.RegisterRequest;
+import kg.BIZ.dto.request.CompanyRegisterRequest;
+import kg.BIZ.dto.request.VolunteerRegisterRequest;
 import kg.BIZ.dto.response.AuthenticationResponse;
 import kg.BIZ.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +22,15 @@ public class AuthenticationApi {
     private final AuthenticationService authenticationService;
 
     @Operation(summary = "Register a new user", description = "This method validates the request and creates a new user.")
-    @PostMapping("/sign-up")
-    public AuthenticationResponse signUp(@RequestBody @Valid RegisterRequest request) {
-        return authenticationService.register(request);
+    @PostMapping("/volunteer/sign-up")
+    public AuthenticationResponse signUp(@RequestBody @Valid VolunteerRegisterRequest request) {
+        return authenticationService.volunteerRegister(request);
+    }
+
+    @Operation(summary = "Register a new company", description = "This method validates the request and creates a new company.")
+    @PostMapping("/company/sign-up")
+    public AuthenticationResponse companySignUp(@RequestBody @Valid CompanyRegisterRequest companyRegisterAuthRequest){
+        return authenticationService.companyRegister(companyRegisterAuthRequest);
     }
 
     @Operation(summary = "Authenticate a user", description = "This method validates the request and authenticates a user.")

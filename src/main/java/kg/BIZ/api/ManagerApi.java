@@ -11,13 +11,13 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/company")
 @RequiredArgsConstructor
-@Tag(name = "Volunteer API")
+@Tag(name = "Manager API")
 @CrossOrigin(origins = "*", maxAge = 3600)
 public class ManagerApi {
     private final ManagerService managerService;
 
     @PutMapping("/aboutCompany")
-    @Operation(summary = "adding info", description = "This method for adding information for company!")
+    @Operation(summary = "adding info", description = "This method for adding information   for company!")
     public SimpleResponse aboutCompany(@RequestBody AboutCompanyRequest aboutCompany){
         return managerService.aboutCompany(aboutCompany);
     }

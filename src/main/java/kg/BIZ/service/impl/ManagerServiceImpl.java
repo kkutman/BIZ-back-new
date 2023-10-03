@@ -22,7 +22,7 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public SimpleResponse aboutCompany(AboutCompanyRequest aboutCompany) {
         User user = jwtService.getAuthenticate();
-        Manager manager = managerRepository.findByUserId(user.getId())
+        Manager manager = managerRepository.findUserById(user.getId())
                 .orElseThrow(()-> new NotFoundException(String.format("Company with user id %s not found!", user.getId())));
 
         manager.setDirectorOfCompany(aboutCompany.directorOfCompany());

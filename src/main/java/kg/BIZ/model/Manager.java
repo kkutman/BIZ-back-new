@@ -30,6 +30,7 @@ public class Manager {
     @OneToMany(mappedBy = "manager")
     List<Chat> chats;
     String directorOfCompany;
+    String companyName;
     String companySlogan;
     LocalDate creatingYear;
     String scopeOfWork;
