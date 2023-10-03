@@ -7,9 +7,8 @@ import kg.BIZ.dto.response.SimpleResponse;
 import kg.BIZ.dto.response.VacancyRequestResponse;
 import kg.BIZ.dto.response.VolunteerRequestResponse;
 import kg.BIZ.exception.exceptions.NotFoundException;
-import kg.BIZ.model.User;
-import kg.BIZ.model.Vacancy;
-import kg.BIZ.model.Volunteer;
+import kg.BIZ.model.*;
+import kg.BIZ.repository.ChatRepository;
 import kg.BIZ.repository.VacancyRepository;
 import kg.BIZ.repository.VolunteerRepository;
 import kg.BIZ.service.EmailService;
@@ -28,9 +27,9 @@ import java.util.List;
 @Slf4j
 @Transactional
 public class VolunteerServiceImpl implements VolunteerService {
+    private final ChatRepository chatRepository;
     private final VacancyRepository vacancyRepository;
     private final VolunteerRepository volunteerRepository;
-
     private final EmailService emailService;
     private final JwtService jwtService;
 
@@ -87,7 +86,21 @@ public class VolunteerServiceImpl implements VolunteerService {
             }
         }
 
-        emailService.sendEmail(volunteer.getUser().getEmail(), "Вакансия!", "Успешно принято");
+        Manager manager = jwtService.getAuthenticate().getManager();
+
+        Chat chat = new Chat();
+        chat.setVolunteer(volunteer);
+        chat.setManager(manager);
+        chat.addMessage(Message.builder()
+                .chat(chat)
+                .message("Hi mister " + volunteer.getUser().getFirstName() + " the company " + vacancy.getCompanyName() + " accepted your respond ))")
+                .sender(manager.getUser())
+                .recipient(volunteer.getUser())
+                .build());
+
+        chatRepository.save(chat);
+
+        emailService.sendEmail(volunteer.getUser().getEmail(), "Вакансия!", vacancy.getCompanyName() + " приняли вас");
 
         return SimpleResponse.builder().httpStatus(HttpStatus.OK).message("volunteer was successfully accepted").build();
     }
