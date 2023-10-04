@@ -22,13 +22,17 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public SimpleResponse aboutCompany(AboutCompanyRequest aboutCompany) {
         User user = jwtService.getAuthenticate();
-        Manager manager = managerRepository.findUserById(user.getId())
+        Manager manager = managerRepository.findManagerByUserId(user.getId())
                 .orElseThrow(()-> new NotFoundException(String.format("Company with user id %s not found!", user.getId())));
 
         manager.setDirectorOfCompany(aboutCompany.directorOfCompany());
         manager.setCompanySlogan(aboutCompany.companySlogan());
         manager.setCreatingYear(aboutCompany.creatingYear());
-        manager.setScopeOfWork(aboutCompany.scopeOfWork());
+        manager.setSphereOfActivity(aboutCompany.sphereOfActivity());
+        manager.setAddress(aboutCompany.address());
+        if(aboutCompany.instagram() != null) manager.setInstagram(aboutCompany.instagram());
+        if(aboutCompany.telegram() != null) manager.setTelegram(aboutCompany.telegram());
+        if (aboutCompany.whatsapp() != null) manager.setWhatsapp(aboutCompany.whatsapp());
         manager.setDescription(aboutCompany.description());
 
         managerRepository.save(manager);

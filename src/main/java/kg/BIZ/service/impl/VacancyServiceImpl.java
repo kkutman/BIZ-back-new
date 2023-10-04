@@ -5,6 +5,7 @@ import kg.BIZ.dto.response.ResponseVacancy;
 import kg.BIZ.dto.response.SimpleResponse;
 import kg.BIZ.dto.response.VacancyResponse;
 import kg.BIZ.exception.exceptions.NotFoundException;
+import kg.BIZ.model.Manager;
 import kg.BIZ.model.User;
 import kg.BIZ.model.Vacancy;
 import kg.BIZ.model.Volunteer;
@@ -44,14 +45,21 @@ public class VacancyServiceImpl implements VacancyService {
     @Override
     public SimpleResponse saveVacancy(VacancyRequest request) {
         User user = getAuthenticate();
+        Manager manager = user.getManager();
+
         Vacancy vacancy = Vacancy.builder()
-                .companyName(request.companyName())
+                .companyName(manager.getCompanyName())
                 .phoneNumber(request.phoneNumber())
                 .createdAt(LocalDate.now())
                 .requirement(request.requirement())
                 .location(request.location())
                 .countOfVolunteers(request.countOfVolunteers())
                 .isActive(false)
+                .isBillable(request.isBillable())
+                .startDate(request.startDate())
+                .endDate(request.endDate())
+                .description(request.description())
+                .position(request.position())
                 .user(user)
                 .email(user.getEmail())
                 .build();
@@ -63,7 +71,6 @@ public class VacancyServiceImpl implements VacancyService {
     public SimpleResponse updatedVacancy(VacancyRequest request, Long id) {
         Vacancy vacancy = vacancyRepository.findById(id).orElseThrow(
                 () -> new NotFoundException(String.format("Vacancy with id %s not found!", id)));
-        if (request.companyName() != null) vacancy.setCompanyName(request.companyName());
         if (request.requirement() != null) vacancy.setRequirement(request.requirement());
         if (request.phoneNumber() != null) vacancy.setPhoneNumber(request.phoneNumber());
         if (request.location() != null) vacancy.setLocation(request.location());
