@@ -30,9 +30,15 @@ public class Manager {
     @OneToMany(mappedBy = "manager")
     List<Chat> chats;
     String directorOfCompany;
+    String address;
     String companyName;
     String companySlogan;
     LocalDate creatingYear;
-    String scopeOfWork;
+    String sphereOfActivity;
     String description;
+    String instagram;
+    String whatsapp;
+    String telegram;
+
+    //fields for images will be added
 }

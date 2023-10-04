@@ -14,15 +14,15 @@ insert into manager (id, user_id)
 values (2, 2);
 
 
-insert into vacancy (id, company_name,location, created_at, email, is_active, phone_number, count_of_volunteers, requirement, user_id)
-values (1, 'BIZ','bishkek', now(), 'aitbaevadil17@gmail.com', true, '+996702219220', 2, 'вы должны знать английский', 2),
-     (2, 'BIZ','bishkek', now(), 'kkutman18@gmail.com', false, '+996702219221', 2, 'нам нужны те, кто знает об IT', 2),
-     (3, 'Mind Mentor','bishkek', now(), 'kauhararipova95@gmail.com', false, '+996702219226', 2, 'нам нужны те, кто знает об Кутмане', 2),
-     (4, 'CODE-WISE','USA', now(), 'erkinovakurmanjan960@gmail.com', true, '+996702219226', 2, 'нам нужны те, кто знает об hh', 2),
-     (5, 'WISE','USA', now(), 'kaseiinovkutman@gmail.com', false, '+996702219226', 2, 'нам нужны те, кто знает об hh', 2),
-     (6, 'CODE','issyk-kol', now(), 'kkutman18@gmail.com', false, '+996702219226', 2, 'нам нужны те, кто знает об hh', 2),
-     (7, 'KutmanSoft','cholpon-ata', now(), 'erkinovakurmanjan960@gmail.com', true, '+996702219226', 2, 'нам нужны те, кто знает об hh', 2),
-     (8, 'SkySoft','typ', now(), 'erkinovakurmanjan960@gmail.com', false, '+996702219226', 2, 'нам нужны те, кто знает об hh', 2);
+insert into vacancy (id, company_name,location, created_at, email, is_active, phone_number, count_of_volunteers, requirement, user_id, position, is_billable, start_date, end_date, description)
+values (1, 'BIZ','bishkek', now(), 'aitbaevadil17@gmail.com', true, '+996702219220', 2, 'вы должны знать английский', 2, 'Project Manager', true, '2023-10-3', '2023-12-3', 'Lorem ipsum lorela ipsum'),
+     (2, 'BIZ','bishkek', now(), 'kkutman18@gmail.com', false, '+996702219221', 2, 'нам нужны те, кто знает об IT', 2, 'Project Manager', true, '2023-10-3', '2023-12-3',  'Lorem ipsum lorela ipsum'),
+     (3, 'Mind Mentor','bishkek', now(), 'kauhararipova95@gmail.com', false, '+996702219226', 2, 'нам нужны те, кто знает об Кутмане', 2, 'Project Manager', true, '2023-10-3', '2023-12-3', 'Lorem ipsum lorela ipsum'),
+     (4, 'CODE-WISE','USA', now(), 'erkinovakurmanjan960@gmail.com', true, '+996702219226', 2, 'нам нужны те, кто знает об hh', 2, 'Project Manager', true, '2023-10-3', '2023-12-3',  'Lorem ipsum lorela ipsum'),
+     (5, 'WISE','USA', now(), 'kaseiinovkutman@gmail.com', false, '+996702219226', 2, 'нам нужны те, кто знает об hh', 2, 'Project Manager', true, '2023-10-3', '2023-12-3', 'Lorem ipsum lorela ipsum'),
+     (6, 'CODE','issyk-kol', now(), 'kkutman18@gmail.com', false, '+996702219226', 2, 'нам нужны те, кто знает об hh', 2, 'Project Manager', true, '2023-10-3', '2023-12-3',  'Lorem ipsum lorela ipsum'),
+     (7, 'KutmanSoft','cholpon-ata', now(), 'erkinovakurmanjan960@gmail.com', true, '+996702219226', 2, 'нам нужны те, кто знает об hh', 2, 'Project Manager', true, '2023-10-3', '2023-12-3',  'Lorem ipsum lorela ipsum'),
+     (8, 'SkySoft','typ', now(), 'erkinovakurmanjan960@gmail.com', false, '+996702219226', 2, 'нам нужны те, кто знает об hh', 2, 'Project Manager', true, '2023-10-3', '2023-12-3',  'Lorem ipsum lorela ipsum');
 
 insert into volunteer (id, age, user_id)
 values (3, 20, 3)
