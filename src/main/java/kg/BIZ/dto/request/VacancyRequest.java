@@ -1,9 +1,9 @@
 package kg.BIZ.dto.request;
 
+import kg.BIZ.model.enums.Navigation;
 import lombok.Builder;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
 
 @Builder
 public record VacancyRequest(
@@ -16,6 +16,7 @@ public record VacancyRequest(
         String requirement,
         String location,
         int countOfVolunteers,
-        String description
+        String description,
+        Navigation navigation
 ) {
 }

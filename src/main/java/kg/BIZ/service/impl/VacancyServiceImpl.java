@@ -60,6 +60,7 @@ public class VacancyServiceImpl implements VacancyService {
                 .endDate(request.endDate())
                 .description(request.description())
                 .position(request.position())
+                .navigation(request.navigation())
                 .user(user)
                 .email(user.getEmail())
                 .build();
@@ -98,6 +99,7 @@ public class VacancyServiceImpl implements VacancyService {
                 .description(vacancy.getRequirement())
                 .email(vacancy.getEmail())
                 .location(vacancy.getLocation())
+                .navigation(vacancy.getNavigation())
                 .phoneNumber(vacancy.getPhoneNumber())
                 .build();
     }

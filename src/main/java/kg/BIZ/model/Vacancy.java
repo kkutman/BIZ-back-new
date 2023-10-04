@@ -1,12 +1,10 @@
 package kg.BIZ.model;
 
 import jakarta.persistence.*;
+import kg.BIZ.model.enums.Navigation;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +51,8 @@ public class Vacancy {
 
     boolean isActive;
     int countOfVolunteers;
-
+    @Enumerated(EnumType.STRING)
+    Navigation navigation;
     @OneToMany
     List<Volunteer>volunteers;
 
